@@ -44,7 +44,7 @@ export function AdminLoginPage() {
           </div>
           {err && <div style={{ background: '#fee2e2', color: '#b91c1c', padding: '10px 12px', borderRadius: '9px', fontSize: '13.5px' }}>Email yoki parol noto'g'ri</div>}
           <button onClick={submit} className="hbg-primary" style={{ width: '100%', background: '#4F46E5', color: '#fff', border: 'none', padding: '13px', borderRadius: '11px', fontWeight: 700, fontSize: '15px', cursor: 'pointer', marginTop: '4px' }}>Kirish</button>
-          <div style={{ background: '#f7f7fb', borderRadius: '9px', padding: '10px 12px', fontSize: '12.5px', color: '#6b7280', textAlign: 'center' }}>Demo: admin@marketplace.uz / admin123</div>
+          <div style={{ background: '#f7f7fb', borderRadius: '9px', padding: '10px 12px', fontSize: '12.5px', color: '#6b7280', textAlign: 'center' }}>Demo: admin@marketplace.uz / Admin123!</div>
           <button onClick={() => nav('/')} style={{ background: 'none', border: 'none', color: '#4F46E5', fontWeight: 600, cursor: 'pointer', fontSize: '13.5px' }}>← Do'konga qaytish</button>
         </div>
       </div>
