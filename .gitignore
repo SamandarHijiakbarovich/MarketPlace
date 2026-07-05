@@ -1,0 +1,30 @@
+# .NET
+backend/**/bin/
+backend/**/obj/
+*.user
+
+# Node / frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Bu loyihada .env / appsettings.json faqat local-dev standart qiymatlarini saqlaydi
+# (haqiqiy sir emas), shuning uchun tekshiruvchi oson ishga tushirishi uchun commit qilinadi.
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.suo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# SQLite ma'lumotlar bazasi (dastur ishga tushganda avtomatik yaratiladi)
+*.db
+*.db-shm
+*.db-wal
+
+# Qodo Gen (local tool config, mashinaga xos)
+.qodo/
