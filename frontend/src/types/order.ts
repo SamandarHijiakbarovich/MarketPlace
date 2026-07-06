@@ -1,6 +1,6 @@
 import type { DeliveryAddress, DeliveryMethod } from './delivery';
 
-export type PaymentMethod = 'Card' | 'CashOnDelivery';
+export type PaymentMethod = 'Card' | 'CashOnDelivery' | 'Click' | 'Payme';
 export type OrderStatus = 'New' | 'Preparing' | 'Delivered' | 'Cancelled';
 export type PaymentStatus = 'Pending' | 'Success' | 'Failed';
 

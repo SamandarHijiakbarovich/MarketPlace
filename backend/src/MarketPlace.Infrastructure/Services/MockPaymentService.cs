@@ -14,6 +14,18 @@ public class MockPaymentService : IPaymentService
             return Task.FromResult(new PaymentResultDto(true, "Naqd to'lov — yetkazib berilganda qabul qilinadi."));
         }
 
+        // Click / Payme — SANDBOX (test) rejimi. Haqiqiy integratsiyada bu yerda
+        // provayder API'siga so'rov yuborilib, to'lov sahifasiga (redirect) yo'naltirilardi
+        // va callback orqali tasdiqlanardi. Assessment uchun to'lovni imitatsiya qilamiz.
+        if (method == PaymentMethod.Click)
+        {
+            return Task.FromResult(new PaymentResultDto(true, "Click orqali to'lov qabul qilindi (test/sandbox rejimi)."));
+        }
+        if (method == PaymentMethod.Payme)
+        {
+            return Task.FromResult(new PaymentResultDto(true, "Payme orqali to'lov qabul qilindi (test/sandbox rejimi)."));
+        }
+
         // Karta — imitatsiya. Bo'shliqlarni olib tashlaymiz.
         var digits = (cardNumber ?? string.Empty).Replace(" ", string.Empty);
 

@@ -3,5 +3,7 @@ namespace MarketPlace.Domain.Enums;
 public enum PaymentMethod
 {
     Card,
-    CashOnDelivery
+    CashOnDelivery,
+    Click,
+    Payme
 }

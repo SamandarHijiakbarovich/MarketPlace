@@ -61,4 +61,4 @@ export interface ProductForm {
 }
 
 export type ShipMethod = 'standard' | 'express';
-export type PayMethod = 'card' | 'cash';
+export type PayMethod = 'card' | 'cash' | 'click' | 'payme';

@@ -68,6 +68,14 @@ export function formatDay(iso: string): string {
   return `${d.getDate()} ${MONTHS[d.getMonth()]}`;
 }
 
+// To'lov usuli yorlig'i (buyurtma detali/muvaffaqiyat sahifasi uchun)
+const PAY_LABEL: Record<string, string> = {
+  Card: 'Karta',
+  CashOnDelivery: 'Naqd',
+  Click: 'Click',
+  Payme: 'Payme',
+};
+
 // ---- Backend buyurtma (to'liq) -> UI Order ----
 export function toOrder(o: ApiOrder): UiOrder {
   return {
@@ -80,7 +88,7 @@ export function toOrder(o: ApiOrder): UiOrder {
     delivery: o.deliveryCost,
     total: o.total,
     status: statusEnToUz(o.status),
-    pay: o.paymentMethod === 'Card' ? 'Karta' : 'Naqd',
+    pay: PAY_LABEL[o.paymentMethod] ?? o.paymentMethod,
     eta: formatDay(o.delivery.estimatedDeliveryDate),
   };
 }

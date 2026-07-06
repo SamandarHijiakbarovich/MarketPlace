@@ -14,6 +14,14 @@ const labelStyle: CSSProperties = { display: 'block', fontSize: '13.5px', color:
 const inp = (bad: boolean): CSSProperties => ({ width: '100%', padding: '12px 14px', border: '1px solid ' + (bad ? '#ef4444' : '#e5e7eb'), borderRadius: '10px', outline: 'none', fontSize: '14.5px' });
 const errText: CSSProperties = { color: '#ef4444', fontSize: '12.5px', marginTop: '5px', display: 'block' };
 
+// UI to'lov usuli -> backend PaymentMethod enum
+const PAY_TO_API: Record<PayMethod, ApiPayMethod> = {
+  card: 'Card',
+  cash: 'CashOnDelivery',
+  click: 'Click',
+  payme: 'Payme',
+};
+
 export function CheckoutPage() {
   const nav = useNavigate();
   const { cart, clear, loading: cartLoading } = useCart();
@@ -64,9 +72,15 @@ export function CheckoutPage() {
       cartId: cart.cartId,
       deliveryAddress: { fullName: name, phone, address },
       deliveryMethod: (shipMethod === 'express' ? 'Express' : 'Standard') as ApiDeliveryMethod,
-      paymentMethod: (payMethod === 'card' ? 'Card' : 'CashOnDelivery') as ApiPayMethod,
+      paymentMethod: PAY_TO_API[payMethod],
       cardNumber: payMethod === 'card' ? cardNum : undefined,
     };
+
+    // Click/Payme -> provayder to'lov sahifasiga o'tamiz; buyurtma o'sha yerda tasdiqlangач yaratiladi.
+    if (payMethod === 'click' || payMethod === 'payme') {
+      nav(`/pay/${payMethod}`, { state: { payload, amount: total } });
+      return;
+    }
 
     try {
       setSubmitting(true);
@@ -90,7 +104,9 @@ export function CheckoutPage() {
   ];
   const payMethods: { key: PayMethod; title: string; icon: string }[] = [
     { key: 'card', title: 'Karta', icon: '💳' },
-    { key: 'cash', title: 'Naqd (yetkazganda)', icon: '💵' },
+    { key: 'cash', title: 'Naqd', icon: '💵' },
+    { key: 'click', title: 'Click', icon: '🔵' },
+    { key: 'payme', title: 'Payme', icon: '🟢' },
   ];
 
   return (
@@ -145,11 +161,11 @@ export function CheckoutPage() {
           {/* To'lov usuli */}
           <div style={{ background: '#fff', border: '1px solid #ececf3', borderRadius: '16px', padding: '22px' }}>
             <h3 style={{ fontSize: '17px', fontWeight: 700, margin: '0 0 16px' }}>3. To'lov usuli</h3>
-            <div className="mp-stack" style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', marginBottom: '16px' }}>
               {payMethods.map((m) => {
                 const active = payMethod === m.key;
                 return (
-                  <button key={m.key} onClick={() => setPayMethod(m.key)} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', padding: '15px', borderRadius: '12px', cursor: 'pointer', border: active ? '2px solid #4F46E5' : '1px solid #e5e7eb', background: active ? '#f5f4ff' : '#fff' }}>
+                  <button key={m.key} onClick={() => setPayMethod(m.key)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', padding: '15px', borderRadius: '12px', cursor: 'pointer', border: active ? '2px solid #4F46E5' : '1px solid #e5e7eb', background: active ? '#f5f4ff' : '#fff' }}>
                     <span style={{ fontSize: '22px' }}>{m.icon}</span>
                     <span style={{ fontWeight: 700 }}>{m.title}</span>
                   </button>
@@ -162,6 +178,17 @@ export function CheckoutPage() {
                 <input value={cardNum} onChange={(e) => onCard(e.target.value)} placeholder="0000 0000 0000 0000" maxLength={19} style={inp(showErrors && !validCard)} />
                 {showErrors && !validCard && <span style={errText}>16 xonali karta raqamini kiriting</span>}
                 <p style={{ fontSize: '12px', color: '#9ca3af', margin: '8px 0 0' }}>Test: "4000..." bilan boshlansa — to'lov rad etiladi.</p>
+              </div>
+            )}
+            {(payMethod === 'click' || payMethod === 'payme') && (
+              <div style={{ borderTop: '1px solid #f0f0f6', paddingTop: '16px', display: 'flex', gap: '12px', alignItems: 'flex-start', background: '#f7f7fb', margin: '0 -22px -22px', padding: '16px 22px', borderRadius: '0 0 16px 16px' }}>
+                <span style={{ fontSize: '22px' }}>{payMethod === 'click' ? '🔵' : '🟢'}</span>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: '14px', marginBottom: '2px' }}>{payMethod === 'click' ? 'Click' : 'Payme'} orqali to'lov (test rejimi)</div>
+                  <p style={{ fontSize: '12.5px', color: '#6b7280', margin: 0, lineHeight: 1.5 }}>
+                    "To'lash va buyurtma berish" tugmasini bosganingizda {payMethod === 'click' ? 'Click' : 'Payme'} to'lovi imitatsiya qilinadi (sandbox). Haqiqiy integratsiyada bu yerda {payMethod === 'click' ? 'Click' : 'Payme'} to'lov sahifasiga yo'naltirilardi.
+                  </p>
+                </div>
               </div>
             )}
           </div>
@@ -189,7 +216,13 @@ export function CheckoutPage() {
           <div style={{ height: '1px', background: '#f0f0f6', margin: '4px 0 16px' }} />
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', fontSize: '20px', fontWeight: 800 }}><span>Yakuniy</span><span>{formatSom(total)}</span></div>
           <button onClick={placeOrder} disabled={submitting} className="hbg-primary" style={{ width: '100%', background: '#4F46E5', color: '#fff', border: 'none', padding: '15px', borderRadius: '12px', fontWeight: 700, fontSize: '15.5px', cursor: submitting ? 'wait' : 'pointer', opacity: submitting ? 0.7 : 1 }}>
-            {submitting ? 'Yuborilmoqda...' : `To'lash va buyurtma berish · ${formatSom(total)}`}
+            {submitting
+              ? 'Yuborilmoqda...'
+              : payMethod === 'click'
+                ? "Click orqali to'lash →"
+                : payMethod === 'payme'
+                  ? "Payme orqali to'lash →"
+                  : `To'lash va buyurtma berish · ${formatSom(total)}`}
           </button>
           <p style={{ textAlign: 'center', fontSize: '12px', color: '#9ca3af', margin: '12px 0 0' }}>🔒 To'lov ma'lumotlaringiz himoyalangan</p>
         </div>

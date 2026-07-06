@@ -6,6 +6,7 @@ import { CartPage } from './pages/CartPage';
 import { CheckoutPage } from './pages/CheckoutPage';
 import { OrderSuccessPage } from './pages/OrderSuccessPage';
 import { OrderFailPage } from './pages/OrderFailPage';
+import { PaymentGatewayPage } from './pages/PaymentGatewayPage';
 import { AdminLoginPage } from './pages/admin/AdminLoginPage';
 import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
 import { AdminProductsPage } from './pages/admin/AdminProductsPage';
@@ -25,6 +26,9 @@ export function AppRoutes() {
         <Route path="order-success" element={<OrderSuccessPage />} />
         <Route path="order-fail" element={<OrderFailPage />} />
       </Route>
+
+      {/* Click/Payme to'lov sahifasi (alohida, do'kon headerisiz) */}
+      <Route path="pay/:provider" element={<PaymentGatewayPage />} />
 
       {/* Admin login (alohida, layoutsiz) */}
       <Route path="admin/login" element={<AdminLoginPage />} />
